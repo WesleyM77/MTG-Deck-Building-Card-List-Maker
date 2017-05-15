@@ -1,4 +1,4 @@
-/* MTG Card Finder - Takes a list of cards a prints a list so one knows where to look in their sorted collection.
+/* MTG Card Finder - Takes a list of cards and prints a list so one knows where to look in their sorted collection.
  * Copyright (C) 2017 Wesley Mauk
  *
  * This program is free software: you can redistribute it and/or modify

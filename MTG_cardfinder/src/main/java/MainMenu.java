@@ -1,4 +1,4 @@
-/* MTG Card Finder - Takes a list of cards a prints a list so one knows where to look in their sorted collection.
+/* MTG Card Finder - Takes a list of cards and prints a list so one knows where to look in their sorted collection.
  * Copyright (C) 2017 Wesley Mauk
  *
  * This program is free software: you can redistribute it and/or modify
@@ -80,13 +80,20 @@ public class MainMenu extends javax.swing.JFrame {
     private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
         // get all cardnames from the textfield and send them to the controller
         ArrayList theCardList = new ArrayList<String>();
-        int size = CardListTextArea.getLineCount();
         String[] cards = CardListTextArea.getText().split("\\n");
+        int size = CardListTextArea.getLineCount();
         int amount[] = new int[size];
+        int sizeToPass = size;
         
         for(int c = 0; c < size; c++)
         {
             String temp = cards[c];
+            if(temp.isEmpty())// the line is blank
+            {
+                sizeToPass--;
+                amount[c] = 0;
+                continue;
+            }
             char ch = temp.charAt(0);            
             
             //lets figure out how many they need
@@ -103,7 +110,15 @@ public class MainMenu extends javax.swing.JFrame {
                     int tempQuant = (Character.getNumericValue(ch) * 10) + Character.getNumericValue(ch2);
                     temp = temp.substring(3);
                     theCardList.add(temp);
-                    amount[c] = tempQuant;
+                    if(c>0)
+                        {
+                        if(amount[c-1] == 0)
+                        {
+                            amount[c-1] = tempQuant;
+                        }
+                    }
+                    else
+                        amount[c] = tempQuant;
                     
                 }
                 else if (Character.isWhitespace(ch2) || ch2 == 'x') // This is where we will split it & they need less than 10 (1 digit)
@@ -111,22 +126,36 @@ public class MainMenu extends javax.swing.JFrame {
                     int tempQuant = Character.getNumericValue(ch);
                     temp = temp.substring(2);
                     theCardList.add(temp);
-                    amount[c] = tempQuant;
+                    if(c>0)
+                        {
+                        if(amount[c-1] == 0)
+                        {
+                            amount[c-1] = tempQuant;
+                        }
+                    }
+                    else
+                        amount[c] = tempQuant;
                 }
                 
             } 
-            else //they didn't include number of cards, default amount is 1
+            else 
             {
                 theCardList.add(temp);
-                amount[c] = 1;
+                if(c>0)
+                {
+                    if(amount[c-1] == 0)
+                    {
+                        amount[c-1] = 1;
+                    }
+                }
+                else
+                    amount[c] = 1;
             }
         } // end for loop
         
         
-        //System.out.println(size + " amount size: " + amount.length + " cardlistsize: " + theCardList.size());
-        // so we have an arraylist with the names of the cards and an int array of quantities
-        // send these to controller so it can generate the list
-        theController.requestGenerateList(theCardList, amount, size);
+
+        theController.requestGenerateList(theCardList, amount, sizeToPass);
     }//GEN-LAST:event_SubmitButtonActionPerformed
 
    

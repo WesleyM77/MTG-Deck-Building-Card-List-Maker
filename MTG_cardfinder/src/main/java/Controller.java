@@ -1,4 +1,4 @@
-/* MTG Card Finder - Takes a list of cards a prints a list so one knows where to look in their sorted collection.
+/* MTG Card Finder - Takes a list of cards and prints a list so one knows where to look in their sorted collection.
  * Copyright (C) 2017 Wesley Mauk
  *
  * This program is free software: you can redistribute it and/or modify
@@ -61,12 +61,16 @@ public class Controller {
         
             for(int c = 0; c < size; c++)
             {
-                                
+                
+                String originalCard = theCardList.get(c).trim();
                 searchQuery = "name=" + theCardList.get(c).trim();
                 nameFilter.add(searchQuery);
+                
+                // Calls the API and gets the list of cards that match the query
                 cards = CardAPI.getAllCards(nameFilter);
                 size1 = cards.size();
                 
+                               
                 if(size1 == 0)
                 {
                     String reason = searchQuery.substring(5);
@@ -79,6 +83,13 @@ public class Controller {
                 
                 for(int i = 0; i < size1; i++)    // check rarity and skip if not common or uncommon                 
                 {
+                    
+                    // check to see if we're working on the card that we searched for
+                    if(!originalCard.equalsIgnoreCase(cards.get(i).getName()))
+                    {
+                        continue;
+                    }
+                    
                     String tempRarity = cards.get(i).getRarity();
                     if (tempRarity.equalsIgnoreCase("Common"))
                     {
@@ -103,7 +114,7 @@ public class Controller {
                 if (!flagSkip)
                 {
                     
-                    temp = amount[c] + " " + cards.get(0).getName() + " ";        // print quantity and card name
+                    temp = amount[c] + " " + originalCard + " ";        // print quantity and card name
 
                     for(int i = 0; i < size1; i++)                     // print sets printed in
                     {
@@ -151,7 +162,7 @@ public class Controller {
             // popup something went wrong
             JFrame frame = new JFrame();
             //custom title, warning icon
-            JOptionPane.showMessageDialog(frame, "Something went wrong!", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Something went wrong with making the card list!", "Error", JOptionPane.WARNING_MESSAGE);
         }
         
     }
