@@ -22,3 +22,4 @@ to look up that information.
 
 * Split cards don't work
 * If the user add's a blank line, the app will throw an error and the list will not be made.
+* If a searched card's text returns different cards, it will return the first card, which may not be the desired card.
